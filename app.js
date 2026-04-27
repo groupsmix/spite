@@ -47,6 +47,8 @@
     sort: 'streak-desc',
     editingId: null,
     pendingImageDataUrl: null,
+    pendingImportData: null,
+    lastFocus: null, // element to return focus to when a modal closes
   };
 
   /** DOM */
@@ -64,6 +66,16 @@
     if (state.isPro) document.body.classList.add('is-pro');
     render();
     initHeroDeck();
+
+    // PWA shortcut: open the new-grudge modal directly when launched
+    // from the manifest "New grudge" shortcut (?action=new).
+    try {
+      const params = new URLSearchParams(location.search);
+      if (params.get('action') === 'new') {
+        // Defer so the rest of the app finishes mounting first.
+        setTimeout(() => openEdit(null), 50);
+      }
+    } catch { /* ignore */ }
   }
 
   /** Storage */
@@ -382,7 +394,8 @@
 
   function wrapText(ctx, text, x, y, maxW, lineH, maxLines){
     const words = String(text||'').split(/\s+/);
-    let line = '', lines = [];
+    let line = '';
+    const lines = [];
     for (const w of words){
       const test = line ? line + ' ' + w : w;
       if (ctx.measureText(test).width > maxW && line){
@@ -423,10 +436,67 @@
     return pick;
   }
 
-  /** Modals */
-  function show(sel){ const el = $(sel); el.hidden = false; document.body.style.overflow = 'hidden'; }
-  function hide(sel){ const el = $(sel); el.hidden = true; document.body.style.overflow = ''; }
-  function closeAll(){ ['#editModal','#shareModal','#proModal','#aboutModal','#keyModal'].forEach(hide); }
+  /** Modals
+   *
+   * `show` records the currently focused element so we can restore focus on
+   * close (a11y), then sets up a focus-trap inside the modal until it closes.
+   */
+  const FOCUSABLE = 'a[href], button:not([disabled]), input:not([disabled]):not([type="hidden"]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
+  let trapHandler = null;
+
+  function show(sel){
+    const el = $(sel);
+    if (!el) return;
+    state.lastFocus = document.activeElement;
+    el.hidden = false;
+    document.body.style.overflow = 'hidden';
+    installFocusTrap(el);
+  }
+
+  function hide(sel){
+    const el = $(sel);
+    if (!el) return;
+    el.hidden = true;
+    // Only release the body lock if no modals remain open.
+    const anyOpen = $$('.modal').some(m => !m.hidden);
+    if (!anyOpen) {
+      document.body.style.overflow = '';
+      removeFocusTrap();
+      // Return focus to whatever opened the modal.
+      if (state.lastFocus && typeof state.lastFocus.focus === 'function') {
+        try { state.lastFocus.focus(); } catch { /* ignore */ }
+      }
+      state.lastFocus = null;
+    } else {
+      // Re-arm the trap on whichever modal is still open.
+      const stillOpen = $$('.modal').find(m => !m.hidden);
+      if (stillOpen) installFocusTrap(stillOpen);
+    }
+  }
+
+  function closeAll(){ ['#editModal','#shareModal','#proModal','#aboutModal','#keyModal','#importModal'].forEach(hide); }
+
+  function installFocusTrap(modal){
+    removeFocusTrap();
+    const focusables = $$(FOCUSABLE, modal).filter(el => !el.hasAttribute('hidden') && el.offsetParent !== null);
+    if (focusables.length){
+      // Focus the first focusable shortly after the modal mounts.
+      setTimeout(() => { try { focusables[0].focus({ preventScroll: true }); } catch { /* ignore */ } }, 30);
+    }
+    trapHandler = (e) => {
+      if (e.key !== 'Tab') return;
+      const els = $$(FOCUSABLE, modal).filter(el => !el.hasAttribute('hidden') && el.offsetParent !== null);
+      if (!els.length) return;
+      const first = els[0], last = els[els.length - 1];
+      if (e.shiftKey && document.activeElement === first){ e.preventDefault(); last.focus(); }
+      else if (!e.shiftKey && document.activeElement === last){ e.preventDefault(); first.focus(); }
+    };
+    document.addEventListener('keydown', trapHandler);
+  }
+
+  function removeFocusTrap(){
+    if (trapHandler){ document.removeEventListener('keydown', trapHandler); trapHandler = null; }
+  }
 
   function openPro(){ show('#proModal'); }
   function openKey(){
@@ -535,6 +605,99 @@
     a.click();
     setTimeout(() => URL.revokeObjectURL(a.href), 1000);
     toast('exported.');
+  }
+
+  /** Coerce an unknown value into a valid grudge, or return null. */
+  function normaliseGrudge(g){
+    if (!g || typeof g !== 'object') return null;
+    const title = String(g.title || '').trim();
+    if (!title) return null;
+    const category = CATEGORIES[g.category] ? g.category : 'stranger';
+    const since = (typeof g.since === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(g.since)) ? g.since : todayISO();
+    let severity = parseInt(g.severity, 10);
+    if (!Number.isFinite(severity) || severity < 1 || severity > 5) severity = 3;
+    const notes = String(g.notes || '');
+    const id = (typeof g.id === 'string' && g.id) ? g.id : uid();
+    const createdAt = Number.isFinite(g.createdAt) ? g.createdAt : Date.now();
+    const out = { id, createdAt, title: title.slice(0, 200), category, since, severity, notes: notes.slice(0, 4000) };
+    if (typeof g.image === 'string' && g.image.startsWith('data:image/')) out.image = g.image;
+    return out;
+  }
+
+  function parseImportPayload(raw){
+    let data;
+    try { data = JSON.parse(raw); }
+    catch { return { ok: false, error: 'not valid json.' }; }
+
+    let arr;
+    if (Array.isArray(data)) arr = data;
+    else if (Array.isArray(data?.grudges)) arr = data.grudges;
+    else return { ok: false, error: "json must be an array or an object with a 'grudges' array." };
+
+    const grudges = arr.map(normaliseGrudge).filter(Boolean);
+    if (!grudges.length) return { ok: false, error: 'no valid grudges found in that file.' };
+    return { ok: true, grudges };
+  }
+
+  function readImportFile(file){
+    return new Promise((res, rej) => {
+      const r = new FileReader();
+      r.onload = () => res(String(r.result || ''));
+      r.onerror = () => rej(new Error('could not read file'));
+      r.readAsText(file);
+    });
+  }
+
+  function showImportStatus(msg, kind){
+    const st = $('#importStatus');
+    if (!st) return;
+    st.hidden = false;
+    st.className = 'key-status' + (kind ? ' ' + kind : '');
+    st.textContent = msg;
+  }
+
+  async function submitImportForm(e){
+    e.preventDefault();
+    let raw = $('#fImportJson').value.trim();
+    if (!raw){
+      const file = $('#fImportFile').files?.[0];
+      if (file) raw = await readImportFile(file).catch(() => '');
+    }
+    if (!raw){ showImportStatus('paste json or pick a file first.', 'err'); return; }
+
+    const parsed = parseImportPayload(raw);
+    if (!parsed.ok){ showImportStatus(parsed.error, 'err'); return; }
+
+    const mode = (document.querySelector('input[name="importMode"]:checked')?.value) || 'merge';
+    if (mode === 'replace'){
+      if (state.grudges.length && !confirm(`replace ${state.grudges.length} existing grudge(s) with ${parsed.grudges.length} from the file?`)) return;
+      state.grudges = parsed.grudges;
+    } else {
+      // merge: by id, otherwise append.
+      const byId = new Map(state.grudges.map(g => [g.id, g]));
+      for (const g of parsed.grudges){
+        if (byId.has(g.id)) Object.assign(byId.get(g.id), g);
+        else { state.grudges.unshift(g); byId.set(g.id, g); }
+      }
+    }
+
+    // Free-tier cap is enforced at *new entry* time; if the user imports past
+    // the cap, we keep the data but visibly hint they need Pro to add more.
+    save();
+    render();
+    hide('#importModal');
+    toast(`imported ${parsed.grudges.length} grudge${parsed.grudges.length===1?'':'s'}.`);
+    if (!state.isPro && state.grudges.length > FREE_LIMIT){
+      setTimeout(() => openPro('imported past the free limit. unlock pro to keep adding.'), 600);
+    }
+  }
+
+  function openImport(){
+    $('#fImportJson').value = '';
+    $('#fImportFile').value = '';
+    showImportStatus('', '');
+    $('#importStatus').hidden = true;
+    show('#importModal');
   }
 
   /** Demo seed */
@@ -663,6 +826,13 @@
     $('#aboutBtn').addEventListener('click', () => show('#aboutModal'));
     $('#closeAbout').addEventListener('click', () => hide('#aboutModal'));
     $('#exportBtn').addEventListener('click', exportAll);
+
+    // Import
+    const importLink = $('#importLink');
+    if (importLink) importLink.addEventListener('click', (e) => { e.preventDefault(); openImport(); });
+    $('#closeImport')?.addEventListener('click', () => hide('#importModal'));
+    $('#cancelImport')?.addEventListener('click', () => hide('#importModal'));
+    $('#importForm')?.addEventListener('submit', submitImportForm);
 
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') closeAll();

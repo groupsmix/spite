@@ -1,0 +1,23 @@
+{
+  "name": "spite",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Days since they wronged you. A petty grudge tracker. Static site.",
+  "homepage": "https://spite.lol",
+  "license": "MIT",
+  "scripts": {
+    "lint": "npm run lint:js && npm run lint:css && npm run lint:html",
+    "lint:js": "eslint --no-eslintrc --config .eslintrc.json app.js sw.js",
+    "lint:css": "stylelint \"**/*.css\"",
+    "lint:html": "html-validate index.html privacy.html terms.html 404.html",
+    "validate": "npm run lint && node scripts/check-links.mjs",
+    "serve": "node scripts/serve.mjs",
+    "build:icons": "node scripts/build-icons.mjs"
+  },
+  "devDependencies": {
+    "eslint": "^8.57.0",
+    "html-validate": "^8.18.1",
+    "stylelint": "^16.6.1",
+    "stylelint-config-standard": "^36.0.1"
+  }
+}

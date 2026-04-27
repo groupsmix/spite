@@ -1,0 +1,25 @@
+{
+  "name": "SPITE — a petty tracker",
+  "short_name": "SPITE",
+  "description": "Days since they wronged you. A petty grudge tracker. Local-only. No signup. $9 once, no subscription.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0a0a0a",
+  "theme_color": "#0a0a0a",
+  "categories": ["lifestyle", "productivity", "utilities"],
+  "icons": [
+    { "src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    {
+      "name": "New grudge",
+      "short_name": "New",
+      "description": "File a new grievance",
+      "url": "/?action=new"
+    }
+  ]
+}

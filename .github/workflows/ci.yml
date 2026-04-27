@@ -1,0 +1,50 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  lint:
+    name: lint + validate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: install
+        run: npm install --no-audit --no-fund
+
+      - name: eslint (js + sw)
+        run: npm run lint:js
+
+      - name: stylelint
+        run: npm run lint:css
+
+      - name: html-validate
+        run: npm run lint:html
+
+      - name: link check
+        run: node scripts/check-links.mjs
+
+      - name: validate manifest.webmanifest is valid json
+        run: node -e "JSON.parse(require('fs').readFileSync('manifest.webmanifest','utf8')); console.log('manifest ok')"
+
+      - name: validate sitemap.xml is well-formed
+        run: |
+          python3 -c "import xml.etree.ElementTree as ET; ET.parse('sitemap.xml'); print('sitemap ok')"
+
+      - name: PNG sanity (icons + og)
+        run: |
+          for f in og.png icons/icon-192.png icons/icon-512.png icons/icon-maskable-512.png; do
+            head -c 8 "$f" | xxd | grep -q "8950 4e47 0d0a 1a0a" && echo "$f: PNG ok" || (echo "$f: BAD PNG" && exit 1)
+          done

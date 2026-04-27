@@ -1,0 +1,6 @@
+# Pretty URLs
+/privacy   /privacy.html   200
+/terms     /terms.html     200
+
+# Catch-all 404
+/*         /404.html       404

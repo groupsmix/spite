@@ -1,0 +1,30 @@
+# Cloudflare Pages / Netlify _headers
+# Security + caching for SPITE.
+
+/*
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: DENY
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), interest-cohort=()
+  Strict-Transport-Security: max-age=63072000; includeSubDomains; preload
+  Content-Security-Policy: default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self' https://api.gumroad.com; form-action 'self' https://gumroad.com; frame-ancestors 'none'; base-uri 'self'; object-src 'none'; upgrade-insecure-requests
+
+# Long-cache static assets (filenames don't have hashes yet — keep modest)
+/styles.css
+  Cache-Control: public, max-age=300, must-revalidate
+/app.js
+  Cache-Control: public, max-age=300, must-revalidate
+
+# Never cache the HTML shell — we want the SW to be updatable
+/
+  Cache-Control: public, max-age=0, must-revalidate
+/index.html
+  Cache-Control: public, max-age=0, must-revalidate
+/sw.js
+  Cache-Control: public, max-age=0, must-revalidate
+
+# Long-cache versioned assets (icons, og)
+/icons/*
+  Cache-Control: public, max-age=31536000, immutable
+/og.png
+  Cache-Control: public, max-age=86400

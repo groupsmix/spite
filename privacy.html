@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>SPITE — privacy</title>
+<meta name="description" content="SPITE has no servers, no analytics, no cookies, no email list, no third-party tracking." />
+<meta name="robots" content="index,follow" />
+<link rel="canonical" href="https://spite.lol/privacy.html" />
+<meta name="theme-color" content="#0a0a0a" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ctext y='26' font-size='28'%3E%F0%9F%96%A4%3C/text%3E%3C/svg%3E" />
+<link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+<header class="topbar">
+  <div class="brand">
+    <a href="/" style="text-decoration:none;color:inherit;display:flex;gap:10px;align-items:baseline;">
+      <span class="brand-mark">▮</span>
+      <span class="brand-name">SPITE</span>
+      <span class="brand-tag">a petty tracker</span>
+    </a>
+  </div>
+  <nav class="topbar-nav">
+    <a href="/#how">how</a>
+    <a href="/#pricing">pricing</a>
+    <a href="/#faq">faq</a>
+    <a href="/privacy.html">privacy</a>
+    <a href="/terms.html">terms</a>
+  </nav>
+  <div class="topbar-actions">
+    <a class="btn-pro" href="/#pricing">unlock pro · $9</a>
+  </div>
+</header>
+
+<main class="strip">
+  <div class="strip-inner" style="max-width:780px;">
+    <h1 class="section-h">privacy</h1>
+    <p class="section-sub">last updated: 2025</p>
+
+    <div class="about-body" style="padding:0;">
+      <p>SPITE has <strong>no servers, no analytics, no cookies, no email list, and no third-party tracking</strong>.</p>
+
+      <p>All data you enter — grudges, notes, screenshots, settings — is stored in your browser's <code>localStorage</code> on the device you're using. It never leaves your device. We have no way to see it, recover it, or back it up. Clear your browser data and it's gone.</p>
+
+      <p>SPITE makes exactly two kinds of network requests:</p>
+      <ol>
+        <li>Loading the static site itself (HTML/CSS/JS/images) from our CDN.</li>
+        <li>When (and only when) you paste a license key into the unlock dialog, the app sends a single CORS POST to <code>https://api.gumroad.com/v2/licenses/verify</code> containing the product ID and the key. Gumroad's response tells us whether to unlock Pro on this device. We never see this request — it goes from your browser directly to Gumroad.</li>
+      </ol>
+
+      <p>If you buy Pro, the purchase itself is processed by Gumroad. Gumroad is the merchant of record and has its own privacy policy at <a href="https://gumroad.com/privacy">gumroad.com/privacy</a>. The only thing SPITE stores from a purchase is the license key you paste in, which is kept in your browser's <code>localStorage</code> so the app stays unlocked between sessions.</p>
+
+      <p>That's the whole policy. There is no <em>"we may share your data with affiliates"</em>. There's no data to share.</p>
+
+      <p class="quote" style="color:var(--ink-dim);font-style:italic;">— management</p>
+
+      <p style="margin-top:32px;"><a href="/" style="color:var(--accent);">← back to SPITE</a></p>
+    </div>
+  </div>
+</main>
+</body>
+</html>
