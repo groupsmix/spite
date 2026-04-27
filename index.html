@@ -1,0 +1,392 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>SPITE — a petty tracker for grown adults</title>
+<meta name="description" content="Days since they wronged you. A petty grudge tracker. Local-only. No signup. No moral high ground. $9 once, no subscription." />
+<meta property="og:title" content="SPITE — a petty tracker" />
+<meta property="og:description" content="Days since they wronged you. Counted." />
+<meta property="og:type" content="website" />
+<meta name="theme-color" content="#0a0a0a" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ctext y='26' font-size='28'%3E%F0%9F%96%A4%3C/text%3E%3C/svg%3E" />
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+<header class="topbar">
+  <div class="brand">
+    <span class="brand-mark">▮</span>
+    <span class="brand-name">SPITE</span>
+    <span class="brand-tag">a petty tracker</span>
+  </div>
+  <nav class="topbar-nav">
+    <a href="#how">how</a>
+    <a href="#wall">wall</a>
+    <a href="#pricing">pricing</a>
+    <a href="#faq">faq</a>
+  </nav>
+  <div class="topbar-actions">
+    <button class="btn-ghost" id="aboutBtn" aria-label="About">manifesto</button>
+    <button class="btn-ghost" id="exportBtn" aria-label="Export">export</button>
+    <button class="btn-pro" id="proBtn">unlock pro · $9</button>
+  </div>
+</header>
+
+<main>
+
+  <!-- =================== LANDING =================== -->
+  <section class="landing">
+    <div class="landing-inner">
+      <div class="landing-copy">
+        <span class="kicker">a petty grudge tracker · local-only · $9 once</span>
+        <h1>Days since they<br/>wronged you.</h1>
+        <p class="lede">
+          Therapy says let it go. <em>You will not.</em>
+          Track every grievance. Beautifully. Privately. With receipts you can post.
+        </p>
+        <div class="cta-row">
+          <a class="btn-primary big" href="#tracker">start tracking — free</a>
+          <button class="btn-ghost" id="seedFromHero">load example pettiness</button>
+        </div>
+        <ul class="landing-bullets">
+          <li><span>▮</span> stored on your device. nothing leaves this page.</li>
+          <li><span>▮</span> no signup. no email. no analytics.</li>
+          <li><span>▮</span> $9 once unlocks pro. forever. no subscription.</li>
+        </ul>
+      </div>
+      <div class="landing-stage" aria-hidden="true">
+        <div class="receipt-deck">
+          <canvas class="receipt-mini r-back-2" data-mini="2" width="540" height="675"></canvas>
+          <canvas class="receipt-mini r-back-1" data-mini="1" width="540" height="675"></canvas>
+          <canvas class="receipt-mini r-front" data-mini="0" width="540" height="675"></canvas>
+        </div>
+        <p class="stage-cap">↓ this is a real receipt card. users post these.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- =================== HOW =================== -->
+  <section class="strip" id="how">
+    <div class="strip-inner">
+      <h2 class="section-h">how it works</h2>
+      <div class="steps">
+        <div class="step">
+          <span class="step-n">01</span>
+          <h3>file it</h3>
+          <p>open SPITE. add the grievance. category, severity, the date it began. takes ten seconds.</p>
+        </div>
+        <div class="step">
+          <span class="step-n">02</span>
+          <h3>watch the counter</h3>
+          <p>days since they wronged you. seething severity from <em>petty</em> to <em>nuclear</em>. private notes. the receipts.</p>
+        </div>
+        <div class="step">
+          <span class="step-n">03</span>
+          <h3>export the receipt</h3>
+          <p>generate a beautiful share card. download a PNG. post it. tag nobody. they'll know.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =================== WALL OF PETTINESS =================== -->
+  <section class="strip strip-bordered" id="wall">
+    <div class="strip-inner">
+      <h2 class="section-h">the wall of pettiness</h2>
+      <p class="section-sub">a sample of what users are filing. names changed. spite preserved.</p>
+      <div class="wall-grid">
+        <article class="wall-card"><span class="wall-cat" style="--c:#ff7a59">coworker</span><h3>Mark stole my labeled yogurt from the office fridge</h3><div class="wall-num">12</div><div class="wall-meta">days · seething</div></article>
+        <article class="wall-card"><span class="wall-cat" style="--c:#d8b676">family</span><h3>Dad called my career a "phase" at Thanksgiving</h3><div class="wall-num">149</div><div class="wall-meta">days · mildly bothered</div></article>
+        <article class="wall-card"><span class="wall-cat" style="--c:#ff3b3b">ex</span><h3>Sarah unfollowed me but still watches every story</h3><div class="wall-num">34</div><div class="wall-meta">days · nuclear</div></article>
+        <article class="wall-card"><span class="wall-cat" style="--c:#cdcdcd">institution</span><h3>Landlord ignored three emails about the radiator</h3><div class="wall-num">21</div><div class="wall-meta">days · seething</div></article>
+        <article class="wall-card"><span class="wall-cat" style="--c:#a78bfa">self</span><h3>Said "you too" to the waiter who said "enjoy your meal"</h3><div class="wall-num">5</div><div class="wall-meta">days · annoyed</div></article>
+        <article class="wall-card"><span class="wall-cat" style="--c:#9bd07a">friend</span><h3>Group chat planned brunch and "forgot" to add me</h3><div class="wall-num">8</div><div class="wall-meta">days · seething</div></article>
+        <article class="wall-card"><span class="wall-cat" style="--c:#7ad0c8">stranger</span><h3>Guy at gym left ten plates on the leg press</h3><div class="wall-num">2</div><div class="wall-meta">days · annoyed</div></article>
+        <article class="wall-card"><span class="wall-cat" style="--c:#ff7a59">coworker</span><h3>Dana took credit for my deck in front of the VP</h3><div class="wall-num">76</div><div class="wall-meta">days · nuclear</div></article>
+      </div>
+    </div>
+  </section>
+
+  <!-- =================== PRICING =================== -->
+  <section class="strip" id="pricing">
+    <div class="strip-inner">
+      <h2 class="section-h">priced for grown adults</h2>
+      <p class="section-sub">no subscription. no account. no calls to a server. one key, forever.</p>
+      <div class="pricing-grid">
+        <div class="price-col">
+          <div class="price-tag">FREE</div>
+          <div class="price-num">$0</div>
+          <div class="price-cap">forever</div>
+          <ul>
+            <li>up to 5 grudges</li>
+            <li>full receipt-card export <em>(with watermark)</em></li>
+            <li>local storage on this device</li>
+            <li>no account, no email</li>
+          </ul>
+          <a class="btn-ghost block" href="#tracker">start free →</a>
+        </div>
+        <div class="price-col price-featured">
+          <div class="price-tag">SPITE PRO</div>
+          <div class="price-num">$9</div>
+          <div class="price-cap">once. forever. one license key.</div>
+          <ul>
+            <li><strong>unlimited</strong> grudges</li>
+            <li>watermark removed from receipt cards</li>
+            <li>6 extra themes <em>(blood orange, courthouse, voicemail, &nbsp;…)</em></li>
+            <li>encrypted JSON / PDF export of everything</li>
+            <li>priority on the next petty feature you suggest</li>
+          </ul>
+          <button class="btn-primary block" id="buyProBtnHero">unlock pro — $9</button>
+          <button class="btn-ghost block link-only" id="havekeyBtnHero">i already have a license key</button>
+        </div>
+        <div class="price-col price-vs">
+          <div class="price-tag">vs.</div>
+          <ul class="vs-list">
+            <li><strong>therapy</strong> <span>$200/hr</span> <em>also good. different goal.</em></li>
+            <li><strong>burning a bridge</strong> <span>free</span> <em>collateral damage. not recommended.</em></li>
+            <li><strong>another notion template</strong> <span>$19</span> <em>bloats your sidebar. you won't open it.</em></li>
+            <li><strong>screaming into a pillow</strong> <span>$0</span> <em>untracked. unlogged. wasted spite.</em></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =================== FAQ =================== -->
+  <section class="strip strip-bordered" id="faq">
+    <div class="strip-inner">
+      <h2 class="section-h">frequently asked, mostly suspicious</h2>
+      <div class="faq">
+        <details>
+          <summary>is this serious or a joke?</summary>
+          <p>both. SPITE is funny on purpose, but the underlying technique — naming and filing a grievance to shrink it — is straight CBT. we just put it in a black t-shirt.</p>
+        </details>
+        <details>
+          <summary>where is my data stored?</summary>
+          <p>in your browser's localStorage. on this device. SPITE has no servers, no analytics, no email list, no auth. close the tab — it stays. open it tomorrow — it's still here. clear your browser data — it's gone.</p>
+        </details>
+        <details>
+          <summary>so if I switch devices, do I lose my grudges?</summary>
+          <p>yes — unless you export the JSON (top bar → export) and import it on the other device. Pro will add encrypted cloud sync via magic link as the next feature.</p>
+        </details>
+        <details>
+          <summary>does the watermark really come off with Pro?</summary>
+          <p>yes. unlock Pro → re-generate the receipt card → no watermark. your previously generated cards keep theirs (they were already saved as PNG).</p>
+        </details>
+        <details>
+          <summary>how does the $9 license work?</summary>
+          <p>buy on Gumroad → Gumroad emails you a license key → paste it into SPITE → unlocked, on this device, forever. you can paste the same key on any number of your own devices. one key, no account.</p>
+        </details>
+        <details>
+          <summary>refunds?</summary>
+          <p>seven days, no questions asked, processed by Gumroad. we don't have a server to ask you on anyway.</p>
+        </details>
+        <details>
+          <summary>can I sync between phone and laptop?</summary>
+          <p>not yet — that's the headline Pro feature shipping next. the Pro license you buy today will include it when it ships, no upcharge.</p>
+        </details>
+        <details>
+          <summary>is this a real business or a side project?</summary>
+          <p>indie. one person, one strong opinion, zero VC money. that's why it costs $9 once instead of $19/mo forever.</p>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <!-- =================== TRACKER =================== -->
+  <div class="wrap" id="tracker">
+
+    <section class="add-row">
+      <button class="btn-primary" id="addBtn">＋ new grudge</button>
+      <div class="filters">
+        <button class="chip chip-active" data-filter="all">all</button>
+        <button class="chip" data-filter="ex">ex</button>
+        <button class="chip" data-filter="coworker">coworker</button>
+        <button class="chip" data-filter="family">family</button>
+        <button class="chip" data-filter="friend">friend</button>
+        <button class="chip" data-filter="stranger">stranger</button>
+        <button class="chip" data-filter="self">self</button>
+        <button class="chip" data-filter="institution">institution</button>
+      </div>
+      <div class="sort">
+        <label for="sortSel">sort</label>
+        <select id="sortSel">
+          <option value="streak-desc">longest streak</option>
+          <option value="streak-asc">freshest pain</option>
+          <option value="severity-desc">most heinous</option>
+          <option value="created-desc">recently added</option>
+        </select>
+      </div>
+    </section>
+
+    <section class="grid" id="grid"></section>
+
+    <section class="empty" id="empty" hidden>
+      <div class="empty-card">
+        <h2>your grudge garden is empty.</h2>
+        <p>suspicious. think harder.</p>
+        <button class="btn-primary" id="addBtn2">＋ add your first grudge</button>
+        <button class="btn-ghost" id="seedBtn">or load some example pettiness</button>
+      </div>
+    </section>
+
+    <section class="stats" id="stats" hidden>
+      <div class="stat"><span class="stat-num" id="statTotal">0</span><span class="stat-lbl">grudges held</span></div>
+      <div class="stat"><span class="stat-num" id="statDays">0</span><span class="stat-lbl">total days of spite</span></div>
+      <div class="stat"><span class="stat-num" id="statLongest">0</span><span class="stat-lbl">longest streak</span></div>
+      <div class="stat"><span class="stat-num" id="statHeinous">—</span><span class="stat-lbl">most heinous</span></div>
+    </section>
+
+    <section class="footer-note">
+      <p>SPITE is a single page. it talks to no servers. close the tab and your grudges are still on this device only.<br/>
+      that's not a privacy policy, that's a personality trait.</p>
+      <p class="tiny">© <span id="yr"></span> · made with caffeine and unresolved feelings · <a href="#" id="proLink">unlock pro</a></p>
+    </section>
+
+  </div>
+
+</main>
+
+<!-- Add / edit modal -->
+<div class="modal" id="editModal" hidden>
+  <div class="modal-card">
+    <header>
+      <h3 id="editTitle">new grudge</h3>
+      <button class="x" id="closeEdit" aria-label="Close">×</button>
+    </header>
+    <form id="editForm" autocomplete="off">
+      <label>headline <span class="hint">keep it short and mean</span>
+        <input type="text" id="fTitle" maxlength="80" required placeholder="e.g. Mark stole my yogurt from the office fridge" />
+      </label>
+
+      <div class="row-2">
+        <label>category
+          <select id="fCategory">
+            <option value="ex">ex</option>
+            <option value="coworker">coworker</option>
+            <option value="family">family</option>
+            <option value="friend">friend</option>
+            <option value="stranger">stranger</option>
+            <option value="self">self</option>
+            <option value="institution">institution</option>
+          </select>
+        </label>
+        <label>since
+          <input type="date" id="fSince" required />
+        </label>
+      </div>
+
+      <label>severity <span class="hint" id="sevHint">3 — mildly bothered</span>
+        <input type="range" id="fSeverity" min="1" max="5" step="1" value="3" />
+        <div class="sev-scale">
+          <span>petty</span><span>annoyed</span><span>bothered</span><span>seething</span><span>nuclear</span>
+        </div>
+      </label>
+
+      <label>the receipts <span class="hint">your private notes. screenshots welcome.</span>
+        <textarea id="fNotes" rows="4" placeholder="exact wording. timestamps. the way they said 'k.' all of it."></textarea>
+      </label>
+
+      <label class="image-drop">
+        <span>attach a screenshot (optional)</span>
+        <input type="file" id="fImage" accept="image/*" />
+        <div id="imgPreview" class="img-preview" hidden></div>
+      </label>
+
+      <div class="form-actions">
+        <button type="button" class="btn-ghost" id="deleteBtn" hidden>delete</button>
+        <div class="spacer"></div>
+        <button type="button" class="btn-ghost" id="cancelEdit">cancel</button>
+        <button type="submit" class="btn-primary" id="saveEdit">save</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Share / receipt modal -->
+<div class="modal" id="shareModal" hidden>
+  <div class="modal-card modal-card-share">
+    <header>
+      <h3>your receipt</h3>
+      <button class="x" id="closeShare" aria-label="Close">×</button>
+    </header>
+    <div class="share-stage">
+      <canvas id="shareCanvas" width="1080" height="1350"></canvas>
+    </div>
+    <div class="share-actions">
+      <button class="btn-ghost" id="copyShare">copy image</button>
+      <a class="btn-primary" id="downloadShare" download="spite-receipt.png">download .png</a>
+    </div>
+    <p class="tiny center">post it. tag nobody. they'll know.</p>
+  </div>
+</div>
+
+<!-- Pro modal -->
+<div class="modal" id="proModal" hidden>
+  <div class="modal-card">
+    <header>
+      <h3>SPITE · pro · $9 once</h3>
+      <button class="x" id="closePro" aria-label="Close">×</button>
+    </header>
+    <div class="pro-body">
+      <ul class="pro-list">
+        <li><span>★</span> unlimited grudges <em>(free is capped at 5)</em></li>
+        <li><span>★</span> 6 extra themes <em>incl. blood orange, courthouse, voicemail</em></li>
+        <li><span>★</span> remove the watermark from receipt cards</li>
+        <li><span>★</span> encrypted cloud sync across devices <em>(shipping next)</em></li>
+        <li><span>★</span> export everything as JSON / PDF</li>
+        <li><span>★</span> priority on the next petty feature you suggest</li>
+      </ul>
+      <div class="pro-cta">
+        <button class="btn-primary big" id="buyProBtn">unlock pro — $9 once</button>
+        <button class="btn-ghost" id="havekeyBtn">i already have a license key</button>
+      </div>
+      <p class="tiny center">no subscription. no account. one key, forever. refunds within 7 days, no questions asked.</p>
+    </div>
+  </div>
+</div>
+
+<!-- License-key modal -->
+<div class="modal" id="keyModal" hidden>
+  <div class="modal-card">
+    <header>
+      <h3>paste your license key</h3>
+      <button class="x" id="closeKey" aria-label="Close">×</button>
+    </header>
+    <form id="keyForm" class="key-body">
+      <p class="tiny">Gumroad emailed it to you after purchase. format like <code>SPITE-XXXX-XXXX-XXXX</code> or whatever Gumroad sent you.</p>
+      <input type="text" id="fKey" autocomplete="off" placeholder="SPITE-XXXX-XXXX-XXXX" required />
+      <div class="key-status" id="keyStatus" hidden></div>
+      <div class="form-actions">
+        <div class="spacer"></div>
+        <button type="button" class="btn-ghost" id="cancelKey">cancel</button>
+        <button type="submit" class="btn-primary" id="submitKey">unlock</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- About / manifesto modal -->
+<div class="modal" id="aboutModal" hidden>
+  <div class="modal-card">
+    <header>
+      <h3>the manifesto</h3>
+      <button class="x" id="closeAbout" aria-label="Close">×</button>
+    </header>
+    <div class="about-body">
+      <p>1. the goal is not to "get over it." the goal is to <em>file</em> it.</p>
+      <p>2. naming a grievance shrinks it. that's CBT. we just dressed it in black.</p>
+      <p>3. nothing here is uploaded. SPITE has no servers, no analytics, no email list. close the tab — it stays on this device. open it tomorrow — it's still here.</p>
+      <p>4. you own your pettiness. export it as JSON anytime.</p>
+      <p>5. if you find this app useful enough to laugh at, pay $9 and keep it alive.</p>
+      <p class="quote">— management (it's just one person and a strong opinion)</p>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast" hidden></div>
+
+<script src="app.js"></script>
+</body>
+</html>
