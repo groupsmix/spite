@@ -427,6 +427,44 @@ body{
 .img-preview{ margin-top: 8px; }
 .img-preview img{ max-width: 100%; max-height: 180px; border: 1px solid var(--line-2); }
 
+/* import modal radio rows */
+.chip-row{
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  gap: 8px !important;
+  text-transform: none !important;
+  letter-spacing: 0 !important;
+  color: var(--ink) !important;
+  font-size: 13px !important;
+  padding: 10px 12px;
+  border: 1px solid var(--line-2);
+  cursor: pointer;
+}
+.chip-row:hover{ border-color: var(--ink-dim); }
+.chip-row input[type="radio"]{ accent-color: var(--accent); }
+
+/* respect users who prefer reduced motion */
+@media (prefers-reduced-motion: reduce){
+  *, *::before, *::after { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; }
+  .receipt-mini{ transition: none !important; }
+}
+
+/* visible focus ring for keyboard users */
+:focus-visible{
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* skip-to-content link */
+.skip-link{
+  position: absolute; left: -9999px; top: 0;
+  background: var(--ink); color: var(--bg); padding: 8px 12px;
+  font-size: 12px; letter-spacing: .12em; text-transform: uppercase;
+  z-index: 100;
+}
+.skip-link:focus{ left: 8px; top: 8px; }
+
 .form-actions{ display:flex; gap: 8px; align-items: center; padding-top: 6px; border-top: 1px dashed var(--line-2); }
 .form-actions .spacer{ flex: 1; }
 
