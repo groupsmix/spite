@@ -232,6 +232,7 @@
   // Common false-positive capitalized tokens we should NOT flag as a name.
   const NAME_STOPWORDS = new Set([
     'I','I\'m','I\'ve','I\'ll','I\'d',
+    'I\u2019m','I\u2019ve','I\u2019ll','I\u2019d',
     'Mom','Mum','Mama','Dad','Pa','Papa','Mother','Father','Sister','Brother','Aunt','Uncle','Cousin','Grandma','Grandpa','Nana',
     'HR','VP','CEO','CFO','CTO','CMO','COO','SVP','EVP','PM','PR','IT','OK','TBH','WTF','LOL','NYC','LA','SF','UK','US','USA','EU','BFF','POV','AITA',
     'God','Jesus',
