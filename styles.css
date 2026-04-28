@@ -495,6 +495,26 @@ body{
 .pro-list li span{ color: var(--gold); }
 .pro-list li em{ color: var(--ink-dim); font-style: normal; font-size: 12px; }
 .pro-cta{ display:flex; flex-direction: column; gap: 8px; padding-top: 6px; border-top: 1px dashed var(--line-2); }
+.pro-coming{
+  margin: 0; padding: 10px 12px;
+  border: 1px dashed var(--line-2);
+  font-size: 11px; line-height: 1.45; color: var(--ink-dim);
+  letter-spacing: .04em;
+}
+.pro-coming em{ color: var(--ink); font-style: normal; }
+.price-sub{
+  margin: 6px 0 0; padding: 8px 10px;
+  border: 1px dashed var(--line-2);
+  font-size: 11px; line-height: 1.45; color: var(--ink-dim);
+}
+.price-sub em{ color: var(--ink); font-style: normal; }
+.name-warn{
+  margin-top: 4px; padding: 8px 10px;
+  border-left: 2px solid var(--gold);
+  background: rgba(216, 182, 118, 0.06);
+  font-size: 11px; line-height: 1.4; color: var(--ink-dim);
+  text-transform: none; letter-spacing: 0;
+}
 
 /* About */
 .about-body{ padding: 16px 18px 22px; display:flex; flex-direction: column; gap: 10px; color: var(--ink); }
