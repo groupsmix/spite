@@ -18,16 +18,18 @@ The code in this repo is launch-ready. Everything below requires **your accounts
 
 ## B. Gumroad product (~15 min, $0)
 
+Full paste-in copy (product name, description, settings) is in [`docs/GUMROAD-LISTING.md`](docs/GUMROAD-LISTING.md). Don't retype anything — copy from there.
+
 - [ ] Sign up at [gumroad.com](https://gumroad.com) (free).
-- [ ] Create a new product:
-  - **Type**: Digital product
-  - **Name**: `SPITE Pro`
-  - **Price**: `$9` (one-time)
-  - **Description**: copy from the in-app `#proModal` (unlimited grudges, watermark removal, JSON export, priority on next petty feature). **Do not list themes, cloud sync, or PDF export as "included today"** — these are roadmap items and the pricing card already says so honestly.
-  - **License keys**: turn this **ON** (Settings → "Generate a unique license key for each customer").
-- [ ] After saving, note these two values:
-  - **Permalink** (the slug at the end of `https://yourname.gumroad.com/l/<permalink>`).
-  - **Product ID** (Product → "Advanced" tab → long uppercase string).
+- [ ] Click "New product" → "Digital product".
+- [ ] Paste the name, price ($9), summary, and description from `docs/GUMROAD-LISTING.md`.
+- [ ] Settings → **License keys → ON**. (If this is off, every customer pays and gets nothing. Non-negotiable.)
+- [ ] Settings → **License key use limit → OFF / unlimited**. (Sharing is not the bottleneck; friction is.)
+- [ ] Upload `og.png` from the repo root as the cover image.
+- [ ] Publish.
+- [ ] After saving, copy these two values into a note:
+  - **Permalink** (the slug at the end of `https://<yourname>.gumroad.com/l/<permalink>`) — if you used the recommended default, it's `spitepro`.
+  - **Product ID** (Product → "Advanced" tab → long uppercase/numeric string, ~24 characters).
 
 ## C. Wire up Gumroad in code (~2 min)
 
@@ -40,13 +42,25 @@ The code in this repo is launch-ready. Everything below requires **your accounts
 
 ## D. Deploy (~10 min)
 
-**Recommended: Cloudflare Pages.**
-- [ ] Cloudflare dashboard → **Workers & Pages** → "Create" → "Pages" → "Connect to Git".
-- [ ] Pick this repo. Build command: **none**. Output directory: `/`.
-- [ ] Click Deploy. ~30 seconds.
-- [ ] Pages → your project → **Custom domains** → add the domain you bought in A. DNS auto-wires if you bought through Cloudflare.
+**Recommended: Cloudflare Pages.** Click-by-click:
 
-Vercel and Netlify also work with the included `_headers` and `_redirects`. GitHub Pages works but the CDN is slower.
+1. [ ] [dash.cloudflare.com](https://dash.cloudflare.com/) → sign in.
+2. [ ] Left sidebar → **Workers & Pages**.
+3. [ ] "Create" button (top right) → **Pages** tab → "Connect to Git".
+4. [ ] Authorize Cloudflare on GitHub, then pick `groupsmix/spite`.
+5. [ ] Project name: `spite` (this becomes `spite.pages.dev`).
+6. [ ] Production branch: `main`.
+7. [ ] **Build command**: leave empty (there is no build step).
+8. [ ] **Build output directory**: `/`.
+9. [ ] Environment variables: none.
+10. [ ] "Save and Deploy". First build is ~30 seconds.
+11. [ ] Once green, click the deployment. You get `https://spite.pages.dev` — that's your staging URL for testing.
+12. [ ] **Custom domains** tab → "Set up a custom domain" → type `spite.lol` (or whatever you bought). If you registered via Cloudflare, DNS auto-wires in ~1 minute. If you used another registrar, Cloudflare shows you the CNAME to add.
+13. [ ] Every push to `main` now auto-deploys. Give it ~30s after merge before testing.
+
+**Already have a staging preview:** `https://spite-qkuqikan.devinapps.com` (deployed from this checkout) — for UI smoke-testing before you even touch Cloudflare. It's in demo mode (license key `SPITE-DEMO-1234-5678` unlocks Pro on the staging URL; this is intentional for pre-launch testing only).
+
+Vercel and Netlify also work with the included `_headers` and `_redirects`. GitHub Pages works but the CDN is slower and `_headers` is ignored, so skip it.
 
 ## E. End-to-end test on the live URL (~10 min, ~$9 refundable)
 
@@ -67,16 +81,20 @@ Vercel and Netlify also work with the included `_headers` and `_redirects`. GitH
 - [ ] Update the `mailto:` link in `index.html` footer if it isn't already pointing there.
 - [ ] Save a refund-instructions canned reply ("Refunds are processed by Gumroad within 7 days, no questions. Forward your purchase email or use this link: …").
 
-## G. Launch posts (~60 min for the writing, ~30 sec each to post)
+## G. Launch posts (~60 min to customize, ~30 sec each to post)
 
-I'll deliver finished post copy in a follow-up message:
+Finished post copy lives in [`docs/LAUNCH-POSTS.md`](docs/LAUNCH-POSTS.md) — titles, bodies, tweet threads, TikTok script, and a fallback plan if the launch posts flop. Paste each from your own account:
+
 - [ ] r/SideProject — Tuesday or Wednesday morning ET
-- [ ] r/InternetIsBeautiful — same day
-- [ ] IndieHackers "Showing" — same day
-- [ ] Product Hunt — schedule for the following Tuesday
-- [ ] TikTok/Reels — 15-second receipt-export video, posted same day as the Reddit posts
+- [ ] r/InternetIsBeautiful — same day (post a few hours after r/SideProject)
+- [ ] IndieHackers "Showing IH" — same day
+- [ ] Product Hunt — schedule for the *following* Tuesday, 12:01 AM PT
+- [ ] TikTok / Reels — 15-second receipt-export video, same day as the Reddit posts
+- [ ] Twitter/X thread — same day, immediately after r/SideProject goes up
 
-Use UTM tags on each link (`?utm_source=reddit`, `?utm_source=tiktok`, etc.) so Gumroad can attribute revenue.
+Post from *your* accounts, not any Devin-labeled account. Reddit's anti-spam systems nuke new AI-adjacent accounts instantly.
+
+Use UTM tags on every link (`?utm_source=reddit_sideproject`, `?utm_source=twitter`, etc.) — all URLs in `docs/LAUNCH-POSTS.md` already include them.
 
 ## H. Day-of-launch ops
 
