@@ -2,7 +2,7 @@
 
 > Days since they wronged you. Counted.
 
-A petty grudge tracker, sold as a $9 one-time unlock. Static site, zero infrastructure, ~100% margin. Vanilla HTML/CSS/JS. No build step. No backend.
+A petty grudge tracker, sold as a $9 one-time unlock. Static site, zero infrastructure, ~85% net margin after Gumroad/Stripe fees. Vanilla HTML/CSS/JS. No build step. No backend.
 
 - 🖤 brutalist dark UI
 - 🔒 100% local — data lives in your browser's `localStorage`, no servers, no analytics, no email list

@@ -66,6 +66,10 @@
     if (state.isPro) document.body.classList.add('is-pro');
     render();
     initHeroDeck();
+    // Re-verify a stored license against Gumroad on boot, so refunded
+    // / disputed purchases revoke Pro the next time the user is online.
+    // Silent and non-blocking; offline users keep their cached Pro state.
+    revalidateStoredLicense();
 
     // PWA shortcut: open the new-grudge modal directly when launched
     // from the manifest "New grudge" shortcut (?action=new).
@@ -203,6 +207,7 @@
     $('#fSeverity').value = g?.severity || 3;
     $('#fNotes').value = g?.notes || '';
     updateSevHint();
+    updateNameWarn();
     const prev = $('#imgPreview');
     if (g?.image){ prev.hidden = false; prev.innerHTML = `<img src="${g.image}" alt="screenshot" />`; }
     else { prev.hidden = true; prev.innerHTML = ''; }
@@ -222,6 +227,44 @@
   function updateSevHint(){
     const v = +$('#fSeverity').value;
     $('#sevHint').textContent = `${v} — ${SEV_LABELS[v]}`;
+  }
+
+  // Common false-positive capitalized tokens we should NOT flag as a name.
+  const NAME_STOPWORDS = new Set([
+  const NAME_STOPWORDS = new Set([
+    'I','I\'m','I\'ve','I\'ll','I\'d',
+    'I\u2019m','I\u2019ve','I\u2019ll','I\u2019d',
+    'Mom','Mum','Mama','Dad','Pa','Papa','Mother','Father','Sister','Brother','Aunt','Uncle','Cousin','Grandma','Grandpa','Nana',
+    'HR','VP','CEO','CFO','CTO','CMO','COO','SVP','EVP','PM','PR','IT','OK','TBH','WTF','LOL','NYC','LA','SF','UK','US','USA','EU','BFF','POV','AITA',
+    'God','Jesus',
+  ]);
+  // Detects an @handle, OR two consecutive capitalized words, OR a single
+  // standalone capitalized word that isn't a stopword/sentence-start. Used
+  // to nudge users away from putting real names in headlines.
+  function looksLikeName(s){
+    if (!s) return false;
+    const txt = String(s);
+    if (/(^|\s)@[A-Za-z0-9_]{2,}/.test(txt)) return true;
+    const words = txt.split(/[^A-Za-z'\u2019]+/).filter(Boolean);
+    let prevWasCap = false, anyLowerSeenBefore = false;
+    for (let i = 0; i < words.length; i++){
+      const w = words[i];
+      const isCap = /^[A-Z][a-z\u2019']+$/.test(w);
+      if (isCap && !NAME_STOPWORDS.has(w)){
+        // two capitalized in a row (likely first+last)
+        if (prevWasCap) return true;
+        // single capitalized word mid-sentence (not the first token)
+        if (i > 0 && anyLowerSeenBefore) return true;
+      }
+      prevWasCap = isCap && !NAME_STOPWORDS.has(w);
+      if (/^[a-z]/.test(w)) anyLowerSeenBefore = true;
+    }
+    return false;
+  }
+  function updateNameWarn(){
+    const w = $('#nameWarn');
+    if (!w) return;
+    w.hidden = !looksLikeName($('#fTitle').value);
   }
 
   function saveFromForm(e){
@@ -571,6 +614,44 @@
     document.body.classList.add('is-pro');
   }
 
+  function revokePro(){
+    localStorage.removeItem(PRO_KEY);
+    localStorage.removeItem(PRO_LICENSE_KEY);
+    state.isPro = false;
+    document.body.classList.remove('is-pro');
+  }
+
+  /**
+   * Re-verify a previously-stored license key against Gumroad. Runs on boot.
+   * - If we're in DEMO mode (no GUMROAD_PRODUCT_ID), do nothing.
+   * - If the key is still valid: keep Pro on.
+   * - If Gumroad reports refunded / disputed / chargebacked: revoke Pro.
+   * - On network failure: keep cached Pro state (offline-friendly).
+   */
+  async function revalidateStoredLicense(){
+    if (!GUMROAD_PRODUCT_ID) return;
+    if (!state.isPro) return;
+    const stored = localStorage.getItem(PRO_LICENSE_KEY);
+    if (!stored) return;
+    try {
+      const body = new URLSearchParams();
+      body.set('product_id', GUMROAD_PRODUCT_ID);
+      body.set('license_key', stored);
+      body.set('increment_uses_count', 'false');
+      const res = await fetch('https://api.gumroad.com/v2/licenses/verify', { method: 'POST', body });
+      const data = await res.json().catch(() => ({}));
+      if (data && data.success){
+        const refunded = !!(data.purchase && (data.purchase.refunded || data.purchase.disputed || data.purchase.chargebacked));
+        if (refunded){ revokePro(); toast('pro license revoked (refunded).'); }
+      } else if (data && data.success === false) {
+        // Hard "no" from Gumroad (e.g., key revoked) — revoke locally.
+        revokePro();
+        toast('pro license could not be verified.');
+      }
+      // any other shape (network error, unexpected payload): keep cached state.
+    } catch { /* offline / network error: keep cached Pro state */ }
+  }
+
   async function submitKeyForm(e){
     e.preventDefault();
     const btn = $('#submitKey');
@@ -705,11 +786,11 @@
     const today = new Date();
     const ago = (d) => { const x = new Date(today); x.setDate(today.getDate() - d); return x.toISOString().slice(0,10); };
     const samples = [
-      { title: "Mark stole my labeled yogurt from the office fridge", category: 'coworker', since: ago(12), severity: 4, notes: "It said MINE in sharpie. He knew." },
-      { title: "Dad called my career a 'phase' at Thanksgiving", category: 'family', since: ago(149), severity: 3, notes: "I have been doing this for 11 years." },
-      { title: "Sarah unfollowed me but still watches every story", category: 'ex', since: ago(34), severity: 5, notes: "weird flex but ok" },
-      { title: "Landlord ignored 3 emails about the radiator", category: 'institution', since: ago(21), severity: 4, notes: "47°F in the kitchen." },
-      { title: "I said 'you too' to the waiter who said 'enjoy your meal'", category: 'self', since: ago(5), severity: 2, notes: "" },
+      { title: "that one coworker keeps stealing my labeled yogurt", category: 'coworker', since: ago(12), severity: 4, notes: "It said MINE in sharpie. They knew." },
+      { title: "my parent called my career a 'phase' at the holidays", category: 'family', since: ago(149), severity: 3, notes: "I have been doing this for 11 years." },
+      { title: "the ex unfollowed me but still watches every story", category: 'ex', since: ago(34), severity: 5, notes: "weird flex but ok" },
+      { title: "landlord ignored 3 emails about the radiator", category: 'institution', since: ago(21), severity: 4, notes: "47°F in the kitchen." },
+      { title: "said 'you too' to the waiter who said 'enjoy your meal'", category: 'self', since: ago(5), severity: 2, notes: "" },
     ];
     state.grudges = samples.map(s => ({ id: uid(), createdAt: Date.now() - Math.random()*1e8, ...s }));
     save(); render();
@@ -721,11 +802,11 @@
    *  Pure illustrative previews; not real grudges.
    * ========================================================= */
   const HERO_SAMPLES = [
-    { id: 'a1b2c3d4', title: "Mark stole my labeled yogurt from the office fridge", category: 'coworker', since: 12, severity: 4 },
-    { id: 'e5f6g7h8', title: "Sarah unfollowed me but still watches every story", category: 'ex', since: 34, severity: 5 },
-    { id: 'i9j0k1l2', title: "Dad called my career a 'phase' at Thanksgiving", category: 'family', since: 149, severity: 3 },
-    { id: 'm3n4o5p6', title: "Group chat planned brunch and 'forgot' to add me", category: 'friend', since: 8, severity: 4 },
-    { id: 'q7r8s9t0', title: "Landlord ignored three emails about the radiator", category: 'institution', since: 21, severity: 4 },
+    { id: 'a1b2c3d4', title: "that one coworker keeps stealing my labeled yogurt", category: 'coworker', since: 12, severity: 4 },
+    { id: 'e5f6g7h8', title: "the ex unfollowed me but still watches every story", category: 'ex', since: 34, severity: 5 },
+    { id: 'i9j0k1l2', title: "my parent called my career a 'phase' at the holidays", category: 'family', since: 149, severity: 3 },
+    { id: 'm3n4o5p6', title: "group chat planned brunch and 'forgot' to add me", category: 'friend', since: 8, severity: 4 },
+    { id: 'q7r8s9t0', title: "landlord ignored three emails about the radiator", category: 'institution', since: 21, severity: 4 },
   ];
 
   function sampleToGrudge(s){
@@ -793,6 +874,7 @@
     $('#closeEdit').addEventListener('click', () => hide('#editModal'));
     $('#deleteBtn').addEventListener('click', deleteCurrent);
     $('#fSeverity').addEventListener('input', updateSevHint);
+    $('#fTitle').addEventListener('input', updateNameWarn);
     $('#fImage').addEventListener('change', async (e) => {
       const f = e.target.files?.[0];
       if (!f) return;

@@ -15,7 +15,7 @@ This document is the operational playbook to take SPITE from "demo deployed" to 
 5. Post one launch thread on each: r/SideProject, r/InternetIsBeautiful, IndieHackers, Product Hunt. One TikTok/Reels video showing the receipt-card export.
 6. Wake up. Check Gumroad. Repeat.
 
-Realistic week-one range: **20–200 sales × $9 = $180–$1,800**. The variance is almost entirely how loud the launch posts are.
+Realistic week-one range: **0–200 sales × $9 ≈ $0–$1,800 gross / $0–$1,500 net** after Gumroad+Stripe fees. The bottom of the range is "no launch post hits" (most likely outcome). The top is "one of the launch posts goes viral on Reddit or TikTok" (rare but real). Plan for the bottom; celebrate the top.
 
 ---
 
