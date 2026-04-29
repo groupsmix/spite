@@ -231,6 +231,7 @@
 
   // Common false-positive capitalized tokens we should NOT flag as a name.
   const NAME_STOPWORDS = new Set([
+  const NAME_STOPWORDS = new Set([
     'I','I\'m','I\'ve','I\'ll','I\'d',
     'I\u2019m','I\u2019ve','I\u2019ll','I\u2019d',
     'Mom','Mum','Mama','Dad','Pa','Papa','Mother','Father','Sister','Brother','Aunt','Uncle','Cousin','Grandma','Grandpa','Nana',
