@@ -230,7 +230,9 @@
   }
 
   // Common false-positive capitalized tokens we should NOT flag as a name.
-  const NAME_STOPWORDS = new Set([
+  // Includes both ASCII apostrophe (U+0027) and curly apostrophe (U+2019)
+  // variants of common contractions, because iOS/Android keyboards insert
+  // U+2019 by default (which would otherwise trigger false-positive warnings).
   const NAME_STOPWORDS = new Set([
     'I','I\'m','I\'ve','I\'ll','I\'d',
     'I\u2019m','I\u2019ve','I\u2019ll','I\u2019d',
